@@ -1,50 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTrackFragment">
+    android:background="#1C1C1C">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <!-- عنوان الصفحة -->
+        <TextView
+            android:id="@+id/tvAddTrackTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add New Track"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#FFCC00"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Basic Info -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Basic Info"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp"/>
 
         <EditText
             android:id="@+id/editTrackName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Track Name" />
+            android:layout_height="50dp"
+            android:hint="Track Name"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"/>
 
         <EditText
             android:id="@+id/editRaceDistance"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Race Distance" />
+            android:layout_height="50dp"
+            android:hint="Race Distance"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
 
         <EditText
             android:id="@+id/editNumberOfLaps"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Number of Laps" />
+            android:layout_height="50dp"
+            android:hint="Number of Laps"
+            android:inputType="number"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
 
         <EditText
             android:id="@+id/editFirstGrandPrix"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="First Grand Prix" />
+            android:layout_height="50dp"
+            android:hint="First Grand Prix"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
 
+        <!-- Track Details -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track Details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFCC00"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"/>
+
+        <EditText
+            android:id="@+id/editCircuitType"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Circuit Type"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"/>
+
+        <EditText
+            android:id="@+id/editTrackDirection"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Track Direction"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editTrackWidth"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Track Width"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editTyreWear"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Tyre Wear"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editWeatherConditions"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Weather Conditions"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editelevation"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Elevation"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editDrivingDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Driving Difficulty"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- حقل الهاتف -->
+        <EditText
+            android:id="@+id/editPhone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Phone Number"
+            android:inputType="phone"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- صورة التراك -->
+        <ImageView
+            android:id="@+id/trackImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="centerCrop"
+            android:background="#333333"/>
+
+        <!-- زر الإضافة -->
         <Button
             android:id="@+id/btnAddTrack"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Add Track" />
+            android:layout_height="50dp"
+            android:text="Add Track"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:backgroundTint="#FFEB3B"
+            android:layout_marginTop="24dp"/>
 
     </LinearLayout>
-
-
-</FrameLayout>
+</ScrollView>

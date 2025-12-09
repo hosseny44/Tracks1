@@ -1,94 +1,193 @@
 package com.example.tracks;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.text.TextUtils;
-import android.util.Log;
+import android.os.Parcel;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.UUID;
 
 public class AddTrackFragment extends Fragment {
 
-    private EditText editTrackName, editRaceDistance, editNumberOfLaps, editFirstGrandPrix;
+    private EditText editTrackName, editRaceDistance, editNumberOfLaps, editFirstGrandPrix,
+    editCircuitType ,editTrackDirection  , editTrackWidth, editTyreWear,
+            editWeatherConditions, editelevation , editDrivingDifficulty ,editPhone;
+
+
+    private ImageView imgTrack;
     private Button btnAddTrack;
 
-    private FirebaseFirestore db;
+    private Uri selectedImageUri;
 
-    public AddTrackFragment() {
-        // Required empty constructor
-    }
+    private FirebaseFirestore db;
+    private FirebaseStorage storage;
+
+    private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_add_track, container, false);
 
         editTrackName = view.findViewById(R.id.editTrackName);
         editRaceDistance = view.findViewById(R.id.editRaceDistance);
         editNumberOfLaps = view.findViewById(R.id.editNumberOfLaps);
         editFirstGrandPrix = view.findViewById(R.id.editFirstGrandPrix);
+        imgTrack = view.findViewById(R.id.trackImage);
+        editCircuitType = view.findViewById(R.id.editCircuitType);
+        editTrackDirection = view.findViewById(R.id.editTrackDirection);
+        editTrackWidth = view.findViewById(R.id.editTrackWidth);
+        editTyreWear = view.findViewById(R.id.editTyreWear);
+        editWeatherConditions = view.findViewById(R.id.editWeatherConditions);
+        editelevation = view.findViewById(R.id.editelevation);
+        editDrivingDifficulty = view.findViewById(R.id.editDrivingDifficulty);
+        editPhone= view.findViewById(R.id.editPhone);
         btnAddTrack = view.findViewById(R.id.btnAddTrack);
-
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
+        pickImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        selectedImageUri = result.getData().getData();
+                        Glide.with(this).load(selectedImageUri).into(imgTrack);
+                    }
+                });
 
-        btnAddTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // get data from screen
-                addToFirebase();
-            }});
+        imgTrack.setOnClickListener(v -> openGallery());
+
+        btnAddTrack.setOnClickListener(v -> saveTrack());
+
         return view;
     }
 
-    private void addToFirebase() {
-        String trackName = editTrackName.getText().toString().trim();
+    private void openGallery() {
+        Intent intent = new Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickImageLauncher.launch(intent);
+    }
+
+    private void saveTrack() {
+
+        String trackName = editTrackName.getText().toString().trim() ;
         String raceDistance = editRaceDistance.getText().toString().trim();
         String numberOfLaps = editNumberOfLaps.getText().toString().trim();
         String firstGrandPrix = editFirstGrandPrix.getText().toString().trim();
+        String circuitType = editCircuitType.getText().toString().trim();
+        String trackDirection = editTrackDirection.getText().toString().trim();
+        String trackWidth = editTrackWidth.getText().toString().trim();
+        String tyreWear = editTyreWear.getText().toString().trim();
+        String weatherConditions = editWeatherConditions.getText().toString().trim();
+        String elevation = editelevation.getText().toString().trim();
+        String drivingDifficulty = editDrivingDifficulty.getText().toString().trim();
+        String Phone = editPhone.getText().toString().trim();
 
-        if (TextUtils.isEmpty(trackName) || TextUtils.isEmpty(raceDistance)
-                || TextUtils.isEmpty(numberOfLaps) || TextUtils.isEmpty(firstGrandPrix)) {
-            Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (trackName.isEmpty() || raceDistance.isEmpty()
+                || numberOfLaps.isEmpty() || firstGrandPrix.isEmpty()) {
+
+            Toast.makeText(getActivity(),
+                    "Please fill all fields",
+                    Toast.LENGTH_SHORT).show();
             return;
         }
-        F1Track track = new F1Track(trackName, raceDistance, numberOfLaps, firstGrandPrix);
 
-        db.collection("tracks").add(track).addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-        {
-            @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(getActivity(), "Successfully added your hotel!", Toast.LENGTH_SHORT).show();
+        if (selectedImageUri == null) {
+            Toast.makeText(getActivity(),
+                    "Please choose an image",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("Failed to add your hotel: ", e.getMessage());
-            }
-        });
+        btnAddTrack.setEnabled(false);
+
+        // رفع الصورة
+        StorageReference imageRef = storage.getReference(
+                "tracks/" + UUID.randomUUID().toString() + ".jpg");
+
+        imageRef.putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot ->
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+
+                            String imageUrl = uri.toString();
+
+                            F1Track track = new F1Track(
+                                    trackName,
+                                    raceDistance,
+                                    numberOfLaps,
+                                    firstGrandPrix,
+                                    imageUrl,
+                                    circuitType,
+                                    trackDirection,
+                                    trackWidth,
+                                    tyreWear,
+                                    weatherConditions,
+                                    elevation,
+                                    drivingDifficulty,
+                                    Phone
+                            ) {
+
+                                @Override
+                                public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+                                }
+                            };
+
+                            db.collection("Tracks")
+                                    .add(track)
+                                    .addOnSuccessListener(doc -> {
+                                        Toast.makeText(getActivity(),
+                                                "Track added successfully!",
+                                                Toast.LENGTH_SHORT).show();
+                                        gotoTrackList();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        btnAddTrack.setEnabled(true);
+                                        Toast.makeText(getActivity(),
+                                                e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    });
+
+                        }))
+                .addOnFailureListener(e -> {
+                    btnAddTrack.setEnabled(true);
+                    Toast.makeText(getActivity(),
+                            "Image upload failed",
+                            Toast.LENGTH_SHORT).show();
+                });
     }
 
-    private void clearFields() {
-        editTrackName.setText("");
-        editRaceDistance.setText("");
-        editNumberOfLaps.setText("");
-        editFirstGrandPrix.setText("");
+    private void gotoTrackList() {
+        FragmentTransaction ft =
+                getActivity().getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.frameLayout, new TrackListFragment());
+        ft.commit();
     }
-
 }
+
+

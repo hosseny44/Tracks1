@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TrackListFragment">
+    android:background="#1C1C1C"
+    android:padding="16dp"
+    android:orientation="vertical">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <SearchView
+        android:id="@+id/srchTrack"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:layout_height="wrap_content"
+        android:queryHint="Search tracks..."
+        android:iconifiedByDefault="false"
+        android:layout_marginTop="8dp"/>
 
-        <SearchView
-            android:id="@+id/srchViewTrack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:queryHint="Search smells..." />
+    <TextView
+        android:text="All Tracks"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvTracklist"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="8dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTracklist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    </LinearLayout>
-</FrameLayout>
+</LinearLayout>

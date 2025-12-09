@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
+    android:background="#1C1C1C"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdminFragment">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -18,13 +24,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="go to the first page" />
+            android:textColor="#000000"
+            android:backgroundTint="#C8FFEB3B"
+            android:text="Add Track" />
 
         <Button
             android:id="@+id/btnPage2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" go to the second page" />
+            android:textColor="#000000"
+            android:backgroundTint="#C8FFEB3B"
+            android:text=" All Tracks" />
+
     </LinearLayout>
 </FrameLayout>
 

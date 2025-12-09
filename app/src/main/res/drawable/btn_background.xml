@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- لون الزر الأساسي -->
+    <solid android:color="#FFCC00" />
+
+    <!-- حواف دائرية -->
+    <corners android:radius="12dp" />
+
+    <!-- ظل داخلي -->
+    <padding
+        android:left="8dp"
+        android:top="8dp"
+        android:right="8dp"
+        android:bottom="8dp" />
+
+    <!-- خط حدود خارجي للزر -->
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF" />
+</shape>

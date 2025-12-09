@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/tvSignupTitle"
+            android:id="@+id/tvUpdateTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="Update Profile"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="#FFD700"
@@ -26,33 +26,21 @@
             android:shadowRadius="4"
             android:layout_marginBottom="32dp"/>
 
-        <EditText
-            android:id="@+id/etEmailSignup"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/login_edittext_bg"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#AAAAAA" />
 
+        <ImageView
+            android:id="@+id/ivUserUserDetailsEdit"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="24dp"
+            android:contentDescription="User Image"/>
+
+        <!-- First Name -->
         <EditText
-            android:id="@+id/etUsernameSignup"
+            android:id="@+id/etFirstnameUserDetailsEdit"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/track_edittext_bg"
-            android:hint="Username"
-            android:inputType="textPersonName"
-            android:padding="12dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#AAAAAA" />
-        <EditText
-            android:id="@+id/etFirstnameSignup"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/login_edittext_bg"
             android:hint="First Name"
             android:inputType="textPersonName"
@@ -61,7 +49,7 @@
             android:textColorHint="#AAAAAA" />
 
         <EditText
-            android:id="@+id/etLastnameSignup"
+            android:id="@+id/etLastnameUserDetailsEdit"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
@@ -73,19 +61,20 @@
             android:textColorHint="#AAAAAA" />
 
         <EditText
-            android:id="@+id/etPhoneSignup"
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/login_edittext_bg"
-            android:hint="Phone"
-            android:inputType="phone"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:padding="12dp"
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA" />
 
+        <!-- Password -->
         <EditText
-            android:id="@+id/etPasswordSignup"
+            android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
@@ -96,35 +85,27 @@
             android:textColor="#FFFFFF"
             android:textColorHint="#AAAAAA" />
 
+        <EditText
+            android:id="@+id/etPhoneUserDetailsEdit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/login_edittext_bg"
+            android:hint="Phone"
+            android:inputType="phone"
+            android:padding="12dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA" />
 
         <Button
-            android:id="@+id/btnSignupSignup"
+            android:id="@+id/btnUpdateUserDetails"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="24dp"
-            android:text="SIGN UP"
-            android:backgroundTint="#C8FFEB3B"
+            android:text="UPDATE"
+            android:backgroundTint="#FFC107"
             android:textColor="#000000"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvLoginSignup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Already have an account? Login"
-            android:textColor="#FF4444"/>
-
-        <ImageView
-            android:id="@+id/ivPhotoSignupFragment"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/ic_launcher_foreground"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_foreground" />
 
     </LinearLayout>
 </ScrollView>
