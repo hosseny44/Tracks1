@@ -64,7 +64,6 @@ public class LoginFragment extends Fragment {
                                     "You have successfully logged in!",
                                     Toast.LENGTH_SHORT).show();
 
-                            // 🔥 إظهار الكباس بعد اللوجين
                             MainActivity activity = (MainActivity) requireActivity();
                             activity.getBottomNavigationView().setVisibility(View.VISIBLE);
                             activity.pushFragment(new TrackListFragment());

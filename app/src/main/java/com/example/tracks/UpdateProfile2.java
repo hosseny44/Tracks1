@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.UUID;
 
@@ -59,24 +58,24 @@ public class UpdateProfile2 extends Fragment {
         fillUserData();
 
         btnUpdate.setOnClickListener(v -> updateUserData());
-
         ivUser.setOnClickListener(v -> openGallery());
     }
 
     private void fillUserData() {
-        User current = fbs.getCurrentUser();
-        if (current != null) {
-            etFirstName.setText(current.getFirstName());
-            etLastName.setText(current.getLastName());
-            etPhone.setText(current.getPhone());
-            etEmail.setText(current.getAddress());
-            etUsername.setText(current.getUsername());
+        fbs.getCurrentObjectUser(current -> {
+            if (current != null) {
+                etFirstName.setText(current.getFirstName());
+                etLastName.setText(current.getLastName());
+                etPhone.setText(current.getPhone());
+                etEmail.setText(current.getAddress());
+                etUsername.setText(current.getUsername());
 
-            if (current.getPhoto() != null && !current.getPhoto().isEmpty()) {
-                Glide.with(this).load(current.getPhoto()).into(ivUser);
-                fbs.setSelectedImageURL(Uri.parse(current.getPhoto()));
+                if (current.getPhoto() != null && !current.getPhoto().isEmpty()) {
+                    Glide.with(this).load(current.getPhoto()).into(ivUser);
+                    fbs.setSelectedImageURL(Uri.parse(current.getPhoto()));
+                }
             }
-        }
+        });
     }
 
     private void updateUserData() {
@@ -92,37 +91,39 @@ public class UpdateProfile2 extends Fragment {
             return;
         }
 
-        User current = fbs.getCurrentUser();
-        if (current != null) {
-            boolean isChanged = !current.getFirstName().equals(firstname) ||
-                    !current.getLastName().equals(lastname) ||
-                    !current.getUsername().equals(username) ||
-                    !current.getPhone().equals(phone) ||
-                    !current.getAddress().equals(email) ||
-                    !current.getPhoto().equals(selectedImage);
+        // جلب المستخدم مباشرة من Firestore
+        fbs.getCurrentObjectUser(current -> {
+            if (current != null) {
+                boolean isChanged = !current.getFirstName().equals(firstname) ||
+                        !current.getLastName().equals(lastname) ||
+                        !current.getUsername().equals(username) ||
+                        !current.getPhone().equals(phone) ||
+                        !current.getAddress().equals(email) ||
+                        !current.getPhoto().equals(selectedImage);
 
-            if (!isChanged) {
-                utils.showMessageDialog(getActivity(), "No changes!");
-                return;
+                if (!isChanged) {
+                    utils.showMessageDialog(getActivity(), "No changes!");
+                    return;
+                }
+
+                User updatedUser = new User(firstname, lastname, phone, selectedImage, username ,email);
+
+                String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                fbs.getFire().collection("users").document(uid)
+                        .set(updatedUser)
+                        .addOnSuccessListener(aVoid -> {
+                            fbs.setCurrentUser(updatedUser);
+                            utils.showMessageDialog(getActivity(), "Data updated successfully!");
+                            getParentFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.frameLayout, new ProfileFragment())
+                                    .commit();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(getActivity(),
+                                "Error updating user: " + e.getMessage(),
+                                Toast.LENGTH_LONG).show());
             }
-
-            User updatedUser = new User(firstname, lastname, phone, selectedImage, username ,email);
-
-            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            fbs.getFire().collection("users").document(uid)
-                    .set(updatedUser)
-                    .addOnSuccessListener(aVoid -> {
-                        fbs.setCurrentUser(updatedUser);
-                        utils.showMessageDialog(getActivity(), "Data updated successfully!");
-                        getParentFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.frameLayout, new ProfileFragment())
-                                .commit();
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(),
-                            "Error updating user: " + e.getMessage(),
-                            Toast.LENGTH_LONG).show());
-        }
+        });
     }
 
     private void openGallery() {
@@ -157,6 +158,7 @@ public class UpdateProfile2 extends Fragment {
                 .addOnFailureListener(e -> Toast.makeText(getActivity(), "Failed to upload image", Toast.LENGTH_SHORT).show())
                 .addOnCompleteListener(task -> btnUpdate.setEnabled(true));
     }
+
     private void setNavigationBarVisible() {
         ((MainActivity)getActivity()).getBottomNavigationView().setVisibility(View.VISIBLE);
     }

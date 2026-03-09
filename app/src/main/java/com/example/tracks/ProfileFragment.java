@@ -1,6 +1,5 @@
 package com.example.tracks;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -8,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,13 +15,15 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
     private ImageView Profile;
     private TextView tvName, tvEmail;
-    private AppCompatButton btnFav, btnCall, btnSet;
+    private AppCompatButton btnFav, btnSet;
     private FirebaseServices fbs;
 
     public ProfileFragment() { }
@@ -29,6 +31,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
@@ -45,23 +48,26 @@ public class ProfileFragment extends Fragment {
         btnSet = getView().findViewById(R.id.btsSet);
 
         btnFav.setOnClickListener(v -> gotoFavorite());
-
         btnSet.setOnClickListener(v -> gotoUpdateProfileFragment());
 
         fillUserData();
     }
 
     private void fillUserData() {
-        User current = fbs.getCurrentUser();
-        if (current != null) {
-            tvName.setText(current.getFirstName());
-            tvEmail.setText(current.getAddress());
 
-            if (current.getPhoto() != null && !current.getPhoto().isEmpty()) {
-                Picasso.get().load(current.getPhoto()).into(Profile);
-                fbs.setSelectedImageURL(Uri.parse(current.getPhoto()));
+        fbs.getCurrentObjectUser(user -> {
+
+            if (user != null) {
+
+                tvName.setText(user.getFirstName());
+                tvEmail.setText(user.getUsername());
+
+                if (user.getPhoto() != null && !user.getPhoto().isEmpty()) {
+                    Picasso.get().load(user.getPhoto()).into(Profile);
+                    fbs.setSelectedImageURL(Uri.parse(user.getPhoto()));
+                }
             }
-        }
+        });
     }
 
     private void gotoUpdateProfileFragment() {
@@ -69,11 +75,13 @@ public class ProfileFragment extends Fragment {
                 .beginTransaction()
                 .replace(R.id.frameLayout, new UpdateProfile2());
         ft.commit();
-        ((MainActivity)getActivity()).getBottomNavigationView().setVisibility(View.VISIBLE);
     }
+
     private void gotoFavorite() {
-        FragmentTransaction ft= getActivity().getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.frameLayout,new FavFragment());
+        FragmentTransaction ft = getActivity().getSupportFragmentManager()
+                .beginTransaction();
+        ft.replace(R.id.frameLayout, new FavFragment());
         ft.commit();
     }
+
 }

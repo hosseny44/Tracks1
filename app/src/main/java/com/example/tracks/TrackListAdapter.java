@@ -98,7 +98,10 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
                     holder.ivFavorite.setImageResource(R.drawable.ic_fav2_foreground);
                     Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show();
                 }
-                fbs.setUserChangeFlag(true); // لتحديث المفضلة لاحقاً عند onPause
+
+                // بدلاً من Flag، حدث المستخدم مباشرة في Firebase
+                fbs.updateUser(fbs.getCurrentUser());
+
                 if (favoriteClickListener != null) favoriteClickListener.onFavoriteClick(track);
             }
         });
@@ -143,4 +146,5 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
         this.trackList = newList;
         notifyDataSetChanged();
     }
+
 }

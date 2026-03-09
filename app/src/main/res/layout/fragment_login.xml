@@ -76,14 +76,6 @@
             android:backgroundTint="#C8FFEB3B"
             android:textColor="#000000"/>
         <!-- زر Admin -->
-        <Button
-            android:id="@+id/btnGoAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#C8FFEB3B"
-            android:text="Go To Admin"
-            android:textColor="#000000"/>
 
     </LinearLayout>
 </ScrollView>
