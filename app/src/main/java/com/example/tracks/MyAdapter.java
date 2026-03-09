@@ -2,7 +2,6 @@ package com.example.tracks;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,15 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-    Context context;
-    ArrayList<F1Track> trackList;
+    private Context context;
+    private ArrayList<F1Track> trackList;
     private String pageType;
-    private OnItemClickListener itemClickListener;
 
     public MyAdapter(Context context, ArrayList<F1Track> trackList, String pageType) {
         this.context = context;
@@ -29,28 +27,44 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         this.pageType = pageType;
     }
 
-    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.item, parent, false);
         return new MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         F1Track track = trackList.get(position);
+        holder.CountryName.setText(  track.getCountryName());
+        holder.exp.setText(track.getEXP());
 
-        holder.trackName.setText("Track Name: " + track.getTrackName());
-        holder.raceDistance.setText("Race Distance: " + track.getRaceDistance() + " Km");
-        holder.numberOfLaps.setText("Number Of Laps: " + track.getNumberOfLaps());
-        holder.firstGrandPrix.setText("First Grand Prix: " + track.getFirstGrandPrix());
-
+        // تحميل صورة المسار
         if (track.getImageUrl() == null || track.getImageUrl().isEmpty()) {
-            Picasso.get().load(R.drawable.ic_launcher_foreground).into(holder.trackImage);
+            Glide.with(context)
+                    .load(R.drawable.ic_launcher_foreground)
+                    .into(holder.trackImage);
         } else {
-            Picasso.get().load(track.getImageUrl()).into(holder.trackImage);
+            Glide.with(context)
+                    .load(track.getImageUrl())
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(holder.trackImage);
         }
 
+        // تحميل صورة الدولة
+        if (track.getImgCountry() == null || track.getImgCountry().isEmpty()) {
+            Glide.with(context)
+                    .load(R.drawable.ic_launcher_foreground)
+                    .circleCrop()
+                    .into(holder.countryImage);
+        } else {
+            Glide.with(context)
+                    .load(track.getImgCountry())
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .into(holder.countryImage);
+        }
+
+        // التعامل مع الضغط على العنصر
         holder.itemView.setOnClickListener(v -> {
             if(pageType.equals("list")) {
                 Bundle args = new Bundle();
@@ -84,24 +98,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView trackName, raceDistance, numberOfLaps, firstGrandPrix;
-        ImageView trackImage;
+        TextView CountryName, exp;
+        ImageView trackImage, countryImage;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(View itemView) {
             super(itemView);
-            trackName = itemView.findViewById(R.id.tvTrackName);
-            raceDistance = itemView.findViewById(R.id.tvRaceDistance);
-            numberOfLaps = itemView.findViewById(R.id.tvNumberOfLaps);
-            firstGrandPrix = itemView.findViewById(R.id.tvFirstGrandPrix);
+            CountryName = itemView.findViewById(R.id.tvCountryName);
+            exp = itemView.findViewById(R.id.tvEXP);
             trackImage = itemView.findViewById(R.id.ivStadiumImage);
+            countryImage = itemView.findViewById(R.id.ivCountry);
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position);
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.itemClickListener = listener;
     }
 }

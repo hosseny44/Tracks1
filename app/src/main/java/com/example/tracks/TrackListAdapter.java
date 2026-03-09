@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tracks.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -46,15 +45,18 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position){
         TrackItem track = trackList.get(position);
 
-        holder.trackName.setText("Track Name: " + track.getTrackName());
-        holder.raceDistance.setText("Race Distance: " + track.getRaceDistance() + " Km");
-        holder.numberOfLaps.setText("Number Of Laps: " + track.getNumberOfLaps());
-        holder.firstGrandPrix.setText("First Grand Prix: " + track.getFirstGrandPrix());
+        holder.CountryName.setText( track.getTrackName());
+        holder.EXP.setText(  track.getRaceDistance());
 
         if (track.getImageUrl() == null || track.getImageUrl().isEmpty()) {
             Picasso.get().load(R.drawable.ic_launcher_foreground).into(holder.trackImage);
         } else {
             Picasso.get().load(track.getImageUrl()).into(holder.trackImage);
+        }
+        if (track.getImgCountry() == null || track.getImgCountry().isEmpty()) {
+            Picasso.get().load(R.drawable.ic_launcher_foreground).into(holder.ivCountry);
+        } else {
+            Picasso.get().load(track.getImgCountry()).into(holder.ivCountry);
         }
 
         // حالة المفضلة
@@ -64,7 +66,6 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
             holder.ivFavorite.setImageResource(R.drawable.ic_fav1_foreground);
         }
 
-        // الضغط على العنصر لفتح التفاصيل
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null)
             {
@@ -86,7 +87,6 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
             }
         });
 
-        // الضغط على أيقونة المفضلة
         holder.ivFavorite.setOnClickListener(v -> {
             if (fbs.getCurrentUser() != null) {
                 if (fbs.getCurrentUser().getFavorites().contains(track.getTrackName())) {
@@ -110,17 +110,16 @@ public class TrackListAdapter extends RecyclerView.Adapter<TrackListAdapter.MyVi
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView trackName, raceDistance, numberOfLaps, firstGrandPrix;
-        ImageView trackImage, ivFavorite;
+        TextView CountryName, EXP;
+        ImageView trackImage, ivFavorite , ivCountry;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            trackName = itemView.findViewById(R.id.tvTrackName);
-            raceDistance = itemView.findViewById(R.id.tvRaceDistance);
-            numberOfLaps = itemView.findViewById(R.id.tvNumberOfLaps);
-            firstGrandPrix = itemView.findViewById(R.id.tvFirstGrandPrix);
+            CountryName = itemView.findViewById(R.id.tvCountryName);
+            EXP = itemView.findViewById(R.id.tvEXP);
             trackImage = itemView.findViewById(R.id.ivStadiumImage);
             ivFavorite = itemView.findViewById(R.id.ivFavorite);
+            ivCountry = itemView.findViewById(R.id.ivCountry);
         }
     }
 

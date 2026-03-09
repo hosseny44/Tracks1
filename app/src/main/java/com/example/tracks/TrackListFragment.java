@@ -91,11 +91,9 @@ public class TrackListFragment extends Fragment {
         }
 
         for (F1Track track : trackList) {
-            if (track.getTrackName().toLowerCase().contains(query.toLowerCase()) ||
-                    track.getRaceDistance().toLowerCase().contains(query.toLowerCase()) ||
-                    track.getNumberOfLaps().toLowerCase().contains(query.toLowerCase()) ||
-                    track.getFirstGrandPrix().toLowerCase().contains(query.toLowerCase())
-            ) {
+            if (track.getCountryName().toLowerCase().contains(query.toLowerCase()) ||
+                    track.getEXP().toLowerCase().contains(query.toLowerCase()));
+            {
                 filteredList.add(track);
             }
         }

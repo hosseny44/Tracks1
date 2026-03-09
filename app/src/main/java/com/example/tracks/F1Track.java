@@ -5,13 +5,15 @@ import android.os.Parcelable;
 
 public class F1Track implements Parcelable {
 
+    private String countryName;
+    private String EXP;
+    private String imgCountry;
     private String trackName;
     private String raceDistance;
     private String numberOfLaps;
     private String firstGrandPrix;
     private String imageUrl;
 
-    // details
     private String circuitType;
     private String trackDirection;
     private String trackWidth;
@@ -29,7 +31,7 @@ public class F1Track implements Parcelable {
                    String circuitType, String trackDirection,
                    String trackWidth, String tyreWear,
                    String weatherConditions, String elevation,
-                   String drivingDifficulty, String location) {
+                   String drivingDifficulty, String location , String countryName , String EXP , String imgCountry) {
 
         this.trackName = trackName;
         this.raceDistance = raceDistance;
@@ -44,9 +46,11 @@ public class F1Track implements Parcelable {
         this.elevation = elevation;
         this.drivingDifficulty = drivingDifficulty;
         this.location = location;
+        this.countryName = countryName;
+        this.EXP = EXP;
+        this.imgCountry = imgCountry;
     }
 
-    // 🔹 Parcelable constructor
     protected F1Track(Parcel in) {
         trackName = in.readString();
         raceDistance = in.readString();
@@ -61,6 +65,9 @@ public class F1Track implements Parcelable {
         elevation = in.readString();
         drivingDifficulty = in.readString();
         location = in.readString();
+        countryName = in.readString();
+        EXP = in.readString();
+        imgCountry = in.readString();
     }
 
     @Override
@@ -78,6 +85,9 @@ public class F1Track implements Parcelable {
         dest.writeString(elevation);
         dest.writeString(drivingDifficulty);
         dest.writeString(location);
+        dest.writeString(countryName);
+        dest.writeString(EXP);
+        dest.writeString(imgCountry);
     }
 
     @Override
@@ -96,8 +106,14 @@ public class F1Track implements Parcelable {
             return new F1Track[size];
         }
     };
+    public String getImgCountry() { return imgCountry; }
+    public void setImgCountry(String imgCountry) { this.imgCountry = imgCountry; }
+    public String getCountryName() { return countryName; }
+    public void setCountryName(String countryName) { this.countryName = countryName; }
+    public String getEXP() {return EXP;}
+    public void setEXP(String EXP) {this.EXP = EXP;}
 
-    // getters & setters
+
 
     public String getTrackName() { return trackName; }
     public void setTrackName(String trackName) { this.trackName = trackName; }

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +29,15 @@ import java.util.UUID;
 public class AddTrackFragment extends Fragment {
 
     private EditText editTrackName, editRaceDistance, editNumberOfLaps, editFirstGrandPrix,
-    editCircuitType ,editTrackDirection  , editTrackWidth, editTyreWear,
-            editWeatherConditions, editelevation , editDrivingDifficulty ,editLocation
-            ;
+            editCircuitType, editTrackDirection, editTrackWidth, editTyreWear,
+            editWeatherConditions, editelevation, editDrivingDifficulty, editLocation,
+            editCountryName, editEXP;
 
-
-    private ImageView imgTrack;
+    private ImageView imgTrack, imgCountry;
     private Button btnAddTrack;
 
-    private Uri selectedImageUri;
+    private Uri selectedImageUri, selectedImageCountryUri;
+    private boolean pickingTrackImage = true;
 
     private FirebaseFirestore db;
     private FirebaseStorage storage;
@@ -54,11 +52,11 @@ public class AddTrackFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_add_track, container, false);
 
+        // --- EditTexts ---
         editTrackName = view.findViewById(R.id.editTrackName);
         editRaceDistance = view.findViewById(R.id.editRaceDistance);
         editNumberOfLaps = view.findViewById(R.id.editNumberOfLaps);
         editFirstGrandPrix = view.findViewById(R.id.editFirstGrandPrix);
-        imgTrack = view.findViewById(R.id.trackImage);
         editCircuitType = view.findViewById(R.id.editCircuitType);
         editTrackDirection = view.findViewById(R.id.editTrackDirection);
         editTrackWidth = view.findViewById(R.id.editTrackWidth);
@@ -66,21 +64,45 @@ public class AddTrackFragment extends Fragment {
         editWeatherConditions = view.findViewById(R.id.editWeatherConditions);
         editelevation = view.findViewById(R.id.editelevation);
         editDrivingDifficulty = view.findViewById(R.id.editDrivingDifficulty);
-        editLocation= view.findViewById(R.id.editLocation);
+        editLocation = view.findViewById(R.id.editLocation);
+        editCountryName = view.findViewById(R.id.editCountryName);
+        editEXP = view.findViewById(R.id.editEXP);
+
+        // --- ImageViews ---
+        imgTrack = view.findViewById(R.id.ivStadiumImage);
+        imgCountry = view.findViewById(R.id.imgCountry);
+
         btnAddTrack = view.findViewById(R.id.btnAddTrack);
+
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
 
+        // --- Image Picker Launcher واحد فقط ---
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        selectedImageUri = result.getData().getData();
-                        Glide.with(this).load(selectedImageUri).into(imgTrack);
+                        Uri uri = result.getData().getData();
+                        if (pickingTrackImage) {
+                            selectedImageUri = uri;
+                            Glide.with(this).load(uri).into(imgTrack);
+                        } else {
+                            selectedImageCountryUri = uri;
+                            Glide.with(this).load(uri).into(imgCountry);
+                        }
                     }
-                });
+                }
+        );
 
-        imgTrack.setOnClickListener(v -> openGallery());
+        imgTrack.setOnClickListener(v -> {
+            pickingTrackImage = true;
+            openGallery();
+        });
+
+        imgCountry.setOnClickListener(v -> {
+            pickingTrackImage = false;
+            openGallery();
+        });
 
         btnAddTrack.setOnClickListener(v -> saveTrack());
 
@@ -88,15 +110,13 @@ public class AddTrackFragment extends Fragment {
     }
 
     private void openGallery() {
-        Intent intent = new Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
         pickImageLauncher.launch(intent);
     }
 
     private void saveTrack() {
-
-        String trackName = editTrackName.getText().toString().trim() ;
+        String trackName = editTrackName.getText().toString().trim();
         String raceDistance = editRaceDistance.getText().toString().trim();
         String numberOfLaps = editNumberOfLaps.getText().toString().trim();
         String firstGrandPrix = editFirstGrandPrix.getText().toString().trim();
@@ -107,91 +127,88 @@ public class AddTrackFragment extends Fragment {
         String weatherConditions = editWeatherConditions.getText().toString().trim();
         String elevation = editelevation.getText().toString().trim();
         String drivingDifficulty = editDrivingDifficulty.getText().toString().trim();
-        String Location = editLocation.getText().toString().trim();
+        String location = editLocation.getText().toString().trim();
+        String countryName = editCountryName.getText().toString().trim();
+        String EXP = editEXP.getText().toString().trim();
 
-        if (trackName.isEmpty() || raceDistance.isEmpty()
-                || numberOfLaps.isEmpty() || firstGrandPrix.isEmpty() || circuitType.isEmpty()
-                || trackDirection.isEmpty() || trackWidth.isEmpty() || tyreWear.isEmpty() || weatherConditions.isEmpty()
-                || elevation.isEmpty() || drivingDifficulty.isEmpty() || Location.isEmpty())
-        {
-
-            Toast.makeText(getActivity(),
-                    "Please fill all fields",
-                    Toast.LENGTH_SHORT).show();
+        if (trackName.isEmpty() || raceDistance.isEmpty() || numberOfLaps.isEmpty()
+                || firstGrandPrix.isEmpty() || circuitType.isEmpty() || trackDirection.isEmpty()
+                || trackWidth.isEmpty() || tyreWear.isEmpty() || weatherConditions.isEmpty()
+                || elevation.isEmpty() || drivingDifficulty.isEmpty() || location.isEmpty()
+                || countryName.isEmpty() || EXP.isEmpty()) {
+            Toast.makeText(getActivity(), "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (selectedImageUri == null) {
-            Toast.makeText(getActivity(),
-                    "Please choose an image",
-                    Toast.LENGTH_SHORT).show();
+        if (selectedImageUri == null || selectedImageCountryUri == null) {
+            Toast.makeText(getActivity(), "Please choose both images", Toast.LENGTH_SHORT).show();
             return;
         }
 
         btnAddTrack.setEnabled(false);
 
-        // رفع الصورة
-        StorageReference imageRef = storage.getReference(
+        StorageReference trackImageRef = storage.getReference(
                 "tracks/" + UUID.randomUUID().toString() + ".jpg");
+        StorageReference countryImageRef = storage.getReference(
+                "countries/" + UUID.randomUUID().toString() + ".jpg");
 
-        imageRef.putFile(selectedImageUri)
+        trackImageRef.putFile(selectedImageUri)
                 .addOnSuccessListener(taskSnapshot ->
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        trackImageRef.getDownloadUrl().addOnSuccessListener(trackUri ->
+                                countryImageRef.putFile(selectedImageCountryUri)
+                                        .addOnSuccessListener(taskSnapshot2 ->
+                                                countryImageRef.getDownloadUrl().addOnSuccessListener(countryUri -> {
 
-                            String imageUrl = uri.toString();
+                                                    String trackImageUrl = trackUri.toString();
+                                                    String countryImageUrl = countryUri.toString();
 
-                            F1Track track = new F1Track(
-                                    trackName,
-                                    raceDistance,
-                                    numberOfLaps,
-                                    firstGrandPrix,
-                                    imageUrl,
-                                    circuitType,
-                                    trackDirection,
-                                    trackWidth,
-                                    tyreWear,
-                                    weatherConditions,
-                                    elevation,
-                                    drivingDifficulty,
-                                    Location
-                            ) {
+                                                    F1Track track = new F1Track(
+                                                            trackName,
+                                                            raceDistance,
+                                                            numberOfLaps,
+                                                            firstGrandPrix,
+                                                            trackImageUrl,
+                                                            circuitType,
+                                                            trackDirection,
+                                                            trackWidth,
+                                                            tyreWear,
+                                                            weatherConditions,
+                                                            elevation,
+                                                            drivingDifficulty,
+                                                            location,
+                                                            countryName,
+                                                            EXP,
+                                                            countryImageUrl
+                                                    );
 
-                                @Override
-                                public void writeToParcel(@NonNull Parcel dest, int flags) {
+                                                    db.collection("Tracks")
+                                                            .add(track)
+                                                            .addOnSuccessListener(doc -> {
+                                                                Toast.makeText(getActivity(),
+                                                                        "Track added successfully!",
+                                                                        Toast.LENGTH_SHORT).show();
+                                                                gotoTrackList();
+                                                            })
+                                                            .addOnFailureListener(e -> {
+                                                                btnAddTrack.setEnabled(true);
+                                                                Toast.makeText(getActivity(),
+                                                                        e.getMessage(),
+                                                                        Toast.LENGTH_SHORT).show();
+                                                            });
 
-                                }
-                            };
-
-                            db.collection("Tracks")
-                                    .add(track)
-                                    .addOnSuccessListener(doc -> {
-                                        Toast.makeText(getActivity(),
-                                                "Track added successfully!",
-                                                Toast.LENGTH_SHORT).show();
-                                        gotoTrackList();
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        btnAddTrack.setEnabled(true);
-                                        Toast.makeText(getActivity(),
-                                                e.getMessage(),
-                                                Toast.LENGTH_SHORT).show();
-                                    });
-
-                        }))
+                                                })
+                                        )
+                        )
+                )
                 .addOnFailureListener(e -> {
                     btnAddTrack.setEnabled(true);
-                    Toast.makeText(getActivity(),
-                            "Image upload failed",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Image upload failed", Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void gotoTrackList() {
-        FragmentTransaction ft =
-                getActivity().getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.frameLayout, new TrackListFragment());
         ft.commit();
     }
 }
-
-

@@ -24,168 +24,102 @@ public class FirebaseServices {
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
     private FirebaseStorage storage;
+
+    // روابط الصور المختارة
     private Uri selectedImageURL;
+
     private User currentUser;
-
     private boolean userChangeFlag;
-
     private TrackItem selectedTrack;
 
-    public Uri getSelectedImageURL() {
-        return selectedImageURL;
-    }
+    public FirebaseServices() {
+        auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
 
-    public void setSelectedImageURL(Uri selectedImageURL) {
-        this.selectedImageURL = selectedImageURL;
-    }
-
-    public  FirebaseServices ()
-    {
-        auth=FirebaseAuth.getInstance();
-        firestore=FirebaseFirestore.getInstance();
-        storage=FirebaseStorage.getInstance();
-        getCurrentObjectUser(new UserCallback() {
-            @Override
-            public void onUserLoaded(User user) {
-                // Access the currentUser here
-                if (user != null) {
-                    setCurrentUser(user);
-                }
-            }
+        getCurrentObjectUser(user -> {
+            if (user != null) setCurrentUser(user);
         });
 
         userChangeFlag = false;
         selectedImageURL = null;
     }
 
-    public FirebaseAuth getAuth() {
-        return auth;
-    }
+    public Uri getSelectedImageURL() { return selectedImageURL; }
+    public void setSelectedImageURL(Uri selectedImageURL) { this.selectedImageURL = selectedImageURL; }
 
-    public FirebaseFirestore getFire() {
-        return firestore;
-    }
 
-    public FirebaseStorage getStorage() {
-        return storage;
-    }
 
-    public  static FirebaseServices getInstance(){
-        if (instance==null){
-            instance=new FirebaseServices();
+    public User getCurrentUser() { return currentUser; }
+    public void setCurrentUser(User currentUser) { this.currentUser = currentUser; }
 
-        }
+    public TrackItem getSelectedTrack() { return selectedTrack; }
+    public void setSelectedTrack(TrackItem selectedTrack) { this.selectedTrack = selectedTrack; }
+
+    public boolean isUserChangeFlag() { return userChangeFlag; }
+    public void setUserChangeFlag(boolean userChangeFlag) { this.userChangeFlag = userChangeFlag; }
+
+    // --- SINGLETON ---
+    public static FirebaseServices getInstance() {
+        if (instance == null) instance = new FirebaseServices();
         return instance;
     }
 
-    public static FirebaseServices reloadInstance(){
-        instance=new FirebaseServices();
+    public static FirebaseServices reloadInstance() {
+        instance = new FirebaseServices();
         return instance;
     }
-    public TrackItem getSelectedTrack() {
-        return selectedTrack;
-    }
 
-    public void setSelectedTrack(TrackItem selectedTrack) {
-        this.selectedTrack = selectedTrack;
-    }
+    public FirebaseAuth getAuth() { return auth; }
+    public FirebaseFirestore getFire() { return firestore; }
+    public FirebaseStorage getStorage() { return storage; }
 
-    public boolean isUserChangeFlag() {
-        return userChangeFlag;
-    }
-
-    public void setUserChangeFlag(boolean userChangeFlag) {
-        this.userChangeFlag = userChangeFlag;
-    }
-
-    public void getCurrentObjectUser(UserCallback callback) {        ArrayList<User> usersInternal = new ArrayList<>();
-        firestore.collection("users").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (DocumentSnapshot dataSnapshot: queryDocumentSnapshots.getDocuments()){
-                    User user = dataSnapshot.toObject(User.class);
-                    if (auth.getCurrentUser() != null && auth.getCurrentUser().getEmail().equals(user.getUsername())) {
-                        usersInternal.add(user);
-
+    public void getCurrentObjectUser(UserCallback callback) {
+        ArrayList<User> usersInternal = new ArrayList<>();
+        firestore.collection("users").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (DocumentSnapshot dataSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        User user = dataSnapshot.toObject(User.class);
+                        if (auth.getCurrentUser() != null &&
+                                auth.getCurrentUser().getEmail().equals(user.getUsername())) {
+                            usersInternal.add(user);
+                        }
                     }
-                }
-                if (usersInternal.size() > 0)
-                    currentUser = usersInternal.get(0);
-
-                callback.onUserLoaded(currentUser);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
+                    if (!usersInternal.isEmpty()) currentUser = usersInternal.get(0);
+                    callback.onUserLoaded(currentUser);
+                })
+                .addOnFailureListener(e -> {});
     }
 
-    public User getCurrentUser()
-    {
-        return this.currentUser;
-    }
-
-    public void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
-    }
-
-    public boolean updateUser(User user)
-    {
+    public boolean updateUser(User user) {
         final boolean[] flag = {false};
-        // Reference to the collection
         String collectionName = "users";
-        String firstNameFieldName = "firstName";
-        String firstNameValue = user.getFirstName();
-        String lastNameFieldName = "lastName";
-        String lastNameValue = user.getLastName();
-        String usernameFieldName = "username";
         String usernameValue = user.getUsername();
-        String addressFieldName = "address";
-        String addressValue = user.getAddress();
-        String phoneFieldName = "phone";
-        String phoneValue = user.getPhone();
-        String photoFieldName = "photo";
-        String photoValue = user.getPhoto();
-        String favoritesFieldName = "favorites";
-        ArrayList<String> favoritesValue = user.getFavorites();
 
-        // Create a query for documents based on a specific field
-        Query query = firestore.collection(collectionName).
-                whereEqualTo(usernameFieldName, usernameValue);
+        Query query = firestore.collection(collectionName)
+                .whereEqualTo("username", usernameValue);
 
-        // Execute the query
         query.get()
-                .addOnSuccessListener((QuerySnapshot querySnapshot) -> {
+                .addOnSuccessListener(querySnapshot -> {
                     for (QueryDocumentSnapshot document : querySnapshot) {
-                        // Get a reference to the document
                         DocumentReference documentRef = document.getReference();
-
-                        // Update specific fields of the document
                         documentRef.update(
-                                        firstNameFieldName, firstNameValue,
-                                        lastNameFieldName, lastNameValue,
-                                        usernameFieldName, usernameValue,
-                                        addressFieldName, addressValue,
-                                        phoneFieldName, phoneValue,
-                                        photoFieldName, photoValue,
-                                        favoritesFieldName, favoritesValue
-                                )
-                                .addOnSuccessListener(aVoid -> {
-
-                                    flag[0] = true;
-                                })
-                                .addOnFailureListener(e -> {
-                                    System.err.println("Error updating document: " + e);
-                                });
+                                        "firstName", user.getFirstName(),
+                                        "lastName", user.getLastName(),
+                                        "username", user.getUsername(),
+                                        "address", user.getAddress(),
+                                        "phone", user.getPhone(),
+                                        "photo", user.getPhoto(),
+                                        "favorites", user.getFavorites()
+                                ).addOnSuccessListener(aVoid -> flag[0] = true)
+                                .addOnFailureListener(e -> System.err.println("Error updating document: " + e));
                     }
                 })
-                .addOnFailureListener(e -> {
-                    System.err.println("Error getting documents: " + e);
-                });
-
+                .addOnFailureListener(e -> System.err.println("Error getting documents: " + e));
         return flag[0];
+    }
+
+    public interface UserCallback {
+        void onUserLoaded(User user);
     }
 }

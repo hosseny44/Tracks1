@@ -23,6 +23,48 @@
             android:layout_marginBottom="24dp"/>
 
         <!-- Basic Info -->
+        <EditText
+            android:id="@+id/editCountryName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Country Name"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/editEXP"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Experience"
+            android:background="@drawable/track_edittext_bg"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#AAAAAA"
+            android:padding="12dp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- صورة التراك -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track Image"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFCC00"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"/>
+
+        <ImageView
+            android:id="@+id/ivStadiumImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_launcher_foreground"
+            android:scaleType="centerCrop"
+            android:background="#333333"/>
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,6 +74,9 @@
             android:textColor="#FFFFFF"
             android:layout_marginBottom="8dp"/>
 
+
+
+        <!-- Track Details -->
         <EditText
             android:id="@+id/editTrackName"
             android:layout_width="match_parent"
@@ -75,8 +120,6 @@
             android:textColorHint="#AAAAAA"
             android:padding="12dp"
             android:layout_marginTop="12dp"/>
-
-        <!-- Track Details -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,7 +206,6 @@
             android:padding="12dp"
             android:layout_marginTop="12dp"/>
 
-        <!-- تعديل Location ليكون نص -->
         <EditText
             android:id="@+id/editLocation"
             android:layout_width="match_parent"
@@ -176,12 +218,11 @@
             android:padding="12dp"
             android:layout_marginTop="12dp"/>
 
-        <!-- صورة التراك -->
+
         <ImageView
-            android:id="@+id/trackImage"
+            android:id="@+id/imgCountry"
             android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="120dp"
             android:src="@drawable/ic_launcher_foreground"
             android:scaleType="centerCrop"
             android:background="#333333"/>
@@ -197,5 +238,15 @@
             android:backgroundTint="#FFEB3B"
             android:layout_marginTop="24dp"/>
 
+        <!-- صورة الدولة -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Country Flag"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFCC00"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"/>
     </LinearLayout>
 </ScrollView>

@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class TrackItem implements Parcelable {
-
+    private String CountryName;
+    private String EXP;
+    private String imgCountry;
     private String id;
     private String trackName;
     private String raceDistance;
@@ -32,7 +34,8 @@ public class TrackItem implements Parcelable {
                      String firstGrandPrix, String imageUrl, String circuitType,
                      String trackDirection, String trackWidth, String tyreWear,
                      String weatherConditions, String elevation,
-                     String drivingDifficulty, String location) {
+                     String drivingDifficulty, String location , String CountryName , String EXP ,
+                     String imgCountry) {
 
         this.id = id;
         this.trackName = trackName;
@@ -49,6 +52,9 @@ public class TrackItem implements Parcelable {
         this.drivingDifficulty = drivingDifficulty;
         this.location = location;
         this.isFavorite = false;
+        this.CountryName = CountryName;
+        this.EXP = EXP;
+        this.imgCountry = imgCountry;
     }
 
     protected TrackItem(Parcel in) {
@@ -66,6 +72,9 @@ public class TrackItem implements Parcelable {
         elevation = in.readString();
         drivingDifficulty = in.readString();
         location = in.readString();
+        CountryName = in.readString();
+        EXP = in.readString();
+        imgCountry = in.readString();
         isFavorite = in.readByte() != 0;
     }
 
@@ -97,6 +106,9 @@ public class TrackItem implements Parcelable {
         dest.writeString(elevation);
         dest.writeString(drivingDifficulty);
         dest.writeString(location);
+        dest.writeString(CountryName);
+        dest.writeString(EXP);
+        dest.writeString(imgCountry);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 
@@ -106,7 +118,8 @@ public class TrackItem implements Parcelable {
     }
 
     // getters & setters
-
+    public String getImgCountry() { return imgCountry; }
+    public void setImgCountry(String imgCountry) { this.imgCountry = imgCountry; }
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -151,7 +164,12 @@ public class TrackItem implements Parcelable {
 
     public boolean isFavorite() { return isFavorite; }
     public void setFavorite(boolean favorite) { this.isFavorite = favorite; }
+    private String getCountryName() {return CountryName;}
+    public void setCountryName(String countryName) {CountryName = countryName;}
+    public String getEXP() {return EXP;}
+    public void setEXP(String EXP) {this.EXP = EXP;}
 
+    //commit
     @Override
     public String toString() {
         return "TrackItem{" +
@@ -160,6 +178,7 @@ public class TrackItem implements Parcelable {
                 ", numberOfLaps='" + numberOfLaps + '\'' +
                 ", firstGrandPrix='" + firstGrandPrix + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
+                ", imgCountry='" + imgCountry + '\'' +
                 ", location='" + location + '\'' +
                 ", isFavorite=" + isFavorite +
                 '}';
