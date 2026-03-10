@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:elevation="2dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- رقم السائق -->
+    <TextView
+        android:id="@+id/driverNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:text="Driver Number"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- تاريخ الرسالة -->
+    <TextView
+        android:id="@+id/radioDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:text="data"
+        android:textColor="#555555"
+        android:textSize="14sp" />
+
+    <!-- زر تشغيل الراديو -->
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="▶ Play Radio"
+        android:backgroundTint="@android:color/holo_purple"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/exp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="10dp">
 
-    <!-- العلم واسم الدولة -->
+    <!-- أيقونة المفضلة على اليمين -->
     <ImageView
         android:id="@+id/ivFavorite"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_fav1_foreground" />
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_fav1_foreground"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Favorite Icon"/>
 
+    <!-- العلم واسم الدولة -->
     <LinearLayout
+        android:id="@+id/countryLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_toStartOf="@id/ivFavorite"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -39,26 +43,26 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- اسم الحلبة -->
-
     <!-- المعلومات + صورة التراك -->
     <LinearLayout
+        android:id="@+id/infoLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:orientation="horizontal">
+        android:layout_below="@id/countryLayout"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp">
 
         <!-- المعلومات -->
         <LinearLayout
-            android:layout_width="258dp"
-            android:layout_height="76dp"
+            android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvEXP"
                 android:layout_width="match_parent"
-                android:layout_height="87dp"
+                android:layout_height="match_parent"
                 android:text="exp"
                 android:textSize="20sp" />
 
@@ -70,7 +74,6 @@
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:scaleType="fitCenter"/>
-
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
